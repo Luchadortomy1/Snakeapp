@@ -36,61 +36,61 @@ export default function SnakeGame() {
   const [snakeColorIdx, setSnakeColorIdx] = useState(0);
   const [foodColorIdx, setFoodColorIdx] = useState(0);
 
-useEffect(() => {
-  if (gameOver || paused || !started) return;
-  const interval = setInterval(() => {
-    moveSnake();
-  }, speed);
-  return () => clearInterval(interval);
-}, [snake, direction, gameOver, paused, started, speed]);
+  useEffect(() => {
+    if (gameOver || paused || !started) return;
+    const interval = setInterval(() => {
+      moveSnake();
+    }, speed);
+    return () => clearInterval(interval);
+  }, [snake, direction, gameOver, paused, started, speed]);
 
-const moveSnake = () => {
-  const head = { ...snake[0] };
-  let newHead = { ...head };
+  const moveSnake = () => {
+    const head = { ...snake[0] };
+    let newHead = { ...head };
 
-  switch (direction) {
-    case 'UP':
-      newHead.y -= 1;
-      break;
-    case 'DOWN':
-      newHead.y += 1;
-      break;
-    case 'LEFT':
-      newHead.x -= 1;
-      break;
-    case 'RIGHT':
-      newHead.x += 1;
-      break;
-  }
+    switch (direction) {
+      case 'UP':
+        newHead.y -= 1;
+        break;
+      case 'DOWN':
+        newHead.y += 1;
+        break;
+      case 'LEFT':
+        newHead.x -= 1;
+        break;
+      case 'RIGHT':
+        newHead.x += 1;
+        break;
+    }
 
-  // Colisión con paredes o consigo misma
-  if (
-    newHead.x < 0 ||
-    newHead.x >= BOARD_SIZE ||
-    newHead.y < 0 ||
-    newHead.y >= BOARD_SIZE ||
-    snake.some(seg => seg.x === newHead.x && seg.y === newHead.y)
-  ) {
-    setGameOver(true);
-    setStarted(false);
-    return;
-  }
+    // Colisión con paredes o consigo misma
+    if (
+      newHead.x < 0 ||
+      newHead.x >= BOARD_SIZE ||
+      newHead.y < 0 ||
+      newHead.y >= BOARD_SIZE ||
+      snake.some(seg => seg.x === newHead.x && seg.y === newHead.y)
+    ) {
+      setGameOver(true);
+      setStarted(false);
+      return;
+    }
 
-  let newSnake = [newHead, ...snake];
+    let newSnake = [newHead, ...snake];
 
-  // Comer manzana
-  if (newHead.x === food.x && newHead.y === food.y) {
-    setFood(getRandomPosition(newSnake));
-    setScore(score + 1);
-    setSnakeColorIdx((prev) => (prev + 1) % SNAKE_COLORS.length);
-    setFoodColorIdx((prev) => (prev + 1) % FOOD_COLORS.length);
-    setSpeed(prev => Math.max(80, prev - 10)); // aumenta velocidad, mínimo 80ms
-  } else {
-    newSnake.pop();
-  }
+    // Comer manzana
+    if (newHead.x === food.x && newHead.y === food.y) {
+      setFood(getRandomPosition(newSnake));
+      setScore(score + 1);
+      setSnakeColorIdx((prev) => (prev + 1) % SNAKE_COLORS.length);
+      setFoodColorIdx((prev) => (prev + 1) % FOOD_COLORS.length);
+      setSpeed(prev => Math.max(80, prev - 10)); // aumenta velocidad, mínimo 80ms
+    } else {
+      newSnake.pop();
+    }
 
-  setSnake(newSnake);
-};
+    setSnake(newSnake);
+  };
 
   const restartGame = () => {
     setSnake(INITIAL_SNAKE);
@@ -102,6 +102,7 @@ const moveSnake = () => {
     setStarted(false);
     setSnakeColorIdx(0);
     setFoodColorIdx(0);
+    setSpeed(200); // Reinicia la velocidad base
   };
 
   const swipeGesture = Gesture.Pan()
